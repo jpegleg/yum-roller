@@ -12,22 +12,20 @@
     template: src=/srv/yroll-saturn.cfg dest=/etc/yroll-saturn.cfg
   - name: execute yroll-saturn
     shell: /usr/local/sbin/yroll-saturn
-    
-- pause:
-  minutes: 10
+  - pause:
+    minutes: 10
    
 - hosts: main
   remote_user: root
   tasks:
 - name: execute yroll-saturn
   shell: /usr/local/sbin/yroll-saturn
-    
- - pause:
+- pause:
   minutes: 10
-  
- - hosts: main
-   remote_user: root
-   tasks: 
- - name: execute check-yroll
-   shell: nice /usr/local/sbin/check-yroll
+ 
+- hosts: main
+  remote_user: root
+  tasks: 
+- name: execute check-yroll
+  shell: nice /usr/local/sbin/check-yroll
   
