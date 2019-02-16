@@ -1,6 +1,5 @@
 ---
 - hosts: main
-  remote_user: root
   tasks:
   - name: deploy yroll-saturn
     template: src=/srv/yroll-saturn dest=/usr/local/sbin/yroll-saturn
@@ -12,20 +11,18 @@
     template: src=/srv/yroll-saturn.cfg dest=/etc/yroll-saturn.cfg
   - name: execute yroll-saturn
     shell: /usr/local/sbin/yroll-saturn
-  - pause:
-    minutes: 10
+ 
+  - pause: minutes=7
    
 - hosts: main
-  remote_user: root
   tasks:
-- name: execute yroll-saturn
-  shell: /usr/local/sbin/yroll-saturn
-- pause:
-  minutes: 10
- 
-- hosts: main
-  remote_user: root
-  tasks: 
-- name: execute check-yroll
-  shell: nice /usr/local/sbin/check-yroll
+  - name: execute yroll-saturn
+    shell: /usr/local/sbin/yroll-saturn
   
+  - pause: minutes=6
+
+- hosts: main
+  tasks: 
+  - name: execute check-yroll
+    shell: nice /usr/local/sbin/check-yroll
+

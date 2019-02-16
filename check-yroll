@@ -16,7 +16,7 @@ procs=0
 
 # Set API communication
 api=$(cat /etc/check-yroll.cfg | grep -o API.* | cut -c 6-)
-port=$(cat /etc/check-yroll.cfg | grpe -o PORT.* | cut -c 6-)
+port=$(cat /etc/check-yroll.cfg | grep -o PORT.* | cut -c 6-)
 
 apiformat=$(cat /etc/check-yroll.cfg | grep -o APIFORMAT.* | cut -c 10-)
 apidata=$(cat /etc/check-yroll.cfg | grep -o APIDATA.* | cut -c 9-)
