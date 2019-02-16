@@ -10,7 +10,6 @@ rm -f /root/saturn.lock &
 exit 0
 }
 
-
 rebootcheck () {
 touch /root/yum.list
 touch /root/yum.before
@@ -19,11 +18,10 @@ yum list installed | grep "kernel[.]" > /root/yum.list
 
 change=$(diff /root/yum.list /root/yum.before)
 if [ -z $change ]; then
-         echo "Same kernel installed as last run, no reboot.";
-        else
-         shutdown -rf now
+    echo "Same kernel installed as last run, no reboot.";
+else
+    shutdown -rf now
 fi
-
 }
 
 main () {
@@ -31,10 +29,7 @@ main () {
     yum update -y --enablerepo=$(cat /etc/yroll-saturn.cfg );
     rm -f /root/saturn.lock
     rebootcheck
-    
 }
-
-
 
 if [ -e /root/saturn.lock ]; then
   exit
