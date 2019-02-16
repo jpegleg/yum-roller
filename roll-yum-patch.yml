@@ -143,4 +143,12 @@
    tasks: 
    - name: check on group 4
      shell: nice /usr/local/sbin/check-yroll
+     
+     
+ - hosts: main
+   remote_user: root
+   tasks:
+   - name: gather facts on all nodes
+     gather_facts: True
+
     
