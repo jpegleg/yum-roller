@@ -6,6 +6,8 @@
     template: src=/srv/yroll-saturn dest=/usr/local/sbin/yroll-saturn
   - name: deploy check-yroll config
     template: src=/srv/check-yroll.cfg dest=/etc/check-yroll.cfg
+  - name: deploy check-yroll
+    template: src=/srv/check-yroll dest=/usr/local/sbin/check-yroll
   - name: deploy generic repo config
     template: src=/srv/yroll-saturn.cfg dest=/etc/yroll-saturn.cfg
   - name: execute yroll-saturn
@@ -18,6 +20,8 @@
     template: src=/srv/yroll-saturn dest=/usr/local/sbin/yroll-saturn
   - name: deploy check-yroll config
     template: src=/srv/check-yroll.cfg dest=/etc/check-yroll.cfg
+  - name: deploy check-yroll
+    template: src=/srv/check-yroll dest=/usr/local/sbin/check-yroll
   - name: deploy generic repo config
     template: src=/srv/yroll-saturn.cfg dest=/etc/yroll-saturn.cfg
   - name: execute yroll-saturn
@@ -30,6 +34,8 @@
     template: src=/srv/yroll-saturn dest=/usr/local/sbin/yroll-saturn
   - name: deploy check-yroll config
     template: src=/srv/check-yroll.cfg dest=/etc/check-yroll.cfg
+  - name: deploy check-yroll
+    template: src=/srv/check-yroll dest=/usr/local/sbin/check-yroll
   - name: deploy generic repo config
     template: src=/srv/yroll-saturn.cfg dest=/etc/yroll-saturn.cfg
   - name: execute yroll-saturn
@@ -42,6 +48,8 @@
     template: src=/srv/yroll-saturn dest=/usr/local/sbin/yroll-saturn
   - name: deploy check-yroll config
     template: src=/srv/check-yroll.cfg dest=/etc/check-yroll.cfg
+  - name: deploy check-yroll
+    template: src=/srv/check-yroll dest=/usr/local/sbin/check-yroll
   - name: deploy generic repo config
     template: src=/srv/yroll-saturn.cfg dest=/etc/yroll-saturn.cfg
   - name: execute yroll-saturn
@@ -87,34 +95,26 @@
  - hosts: slice-1
    remote_user: root
    tasks: 
-   - name: check on group 1
-     template: src=/srv/check-yroll dest=/usr/local/sbin/check-yroll
    - name: execute check-yroll
-     shell: /usr/local/sbin/check-yroll
+     shell: nice /usr/local/sbin/check-yroll
      
  - hosts: slice-2
    remote_user: root
    tasks: 
-   - name: check on group 1
-     template: src=/srv/check-yroll dest=/usr/local/sbin/check-yroll
    - name: execute check-yroll
-     shell: /usr/local/sbin/check-yroll
+     shell: nice /usr/local/sbin/check-yroll
      
  - hosts: slice-3
    remote_user: root
    tasks: 
-   - name: check on group 1
-     template: src=/srv/check-yroll dest=/usr/local/sbin/check-yroll
    - name: execute check-yroll
-     shell: /usr/local/sbin/check-yroll     
+     shell: nice /usr/local/sbin/check-yroll     
      
  - hosts: slice-4
    remote_user: root
    tasks: 
-   - name: check on group 1
-     template: src=/srv/check-yroll dest=/usr/local/sbin/check-yroll
    - name: execute check-yroll
-     shell: /usr/local/sbin/check-yroll
+     shell: nice /usr/local/sbin/check-yroll
      
  # Let them finish up
  - pause:
@@ -124,23 +124,23 @@
    remote_user: root
    tasks: 
    - name: check on group 1
-     shell: /usr/local/sbin/check-yroll
+     shell: nice /usr/local/sbin/check-yroll
      
  - hosts: slice-2
    remote_user: root
    tasks: 
    - name: check on group 2
-     shell: /usr/local/sbin/check-yroll
+     shell: nice /usr/local/sbin/check-yroll
      
  - hosts: slice-3
    remote_user: root
    tasks: 
    - name: check on group 3
-     shell: /usr/local/sbin/check-yroll     
+     shell: nice /usr/local/sbin/check-yroll     
      
  - hosts: slice-4
    remote_user: root
    tasks: 
    - name: check on group 4
-     shell: /usr/local/sbin/check-yroll
+     shell: nice /usr/local/sbin/check-yroll
     
