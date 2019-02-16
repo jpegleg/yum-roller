@@ -30,4 +30,4 @@ from the anisble host.
 Then you can schedule your ansible playbooks with crontab entries if
 you want to go unattended.
 
-0 23 20 4 /usr/bin/ansible -i /etc/cluster-datacenter1 /etc/roll-yum-patch.yml
+0 23 20 4 6 /usr/bin/ansible -i /etc/cluster-datacenter1 /etc/roll-yum-patch.yml
