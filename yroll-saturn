@@ -27,12 +27,11 @@ fi
 }
 
 main () {
-while true; do
-        rebootcheck
-        yum update -y --enablerepo=$(cat /etc/yroll-saturn.cfg | grep -o R.* | cut -c 2-);
-        sleep $(cat /etc/yroll-saturn.cfg | grep -o S.* | cut -c 2-);
-
-done
+    yum-complete-transaction
+    yum update -y --enablerepo=$(cat /etc/yroll-saturn.cfg | grep -o R.* | cut -c 2-);
+    rm -f /root/saturn.lock
+    rebootcheck
+    
 }
 
 
