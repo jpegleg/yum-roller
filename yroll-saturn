@@ -19,7 +19,9 @@ yum list installed | grep "kernel[.]" > /root/yum.list
 change=$(diff /root/yum.list /root/yum.before)
 if [ -z $change ]; then
     echo "Same kernel installed as last run, no reboot.";
+    rm -f /root/saturn.lock
 else
+    rm -f /root/saturn.lock
     shutdown -rf now
 fi
 }
@@ -27,7 +29,6 @@ fi
 main () {
     yum-complete-transaction
     yum update -y --enablerepo=$(cat /etc/yroll-saturn.cfg );
-    rm -f /root/saturn.lock
     rebootcheck
 }
 
