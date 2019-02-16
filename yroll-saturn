@@ -28,7 +28,7 @@ fi
 
 main () {
     yum-complete-transaction
-    yum update -y --enablerepo=$(cat /etc/yroll-saturn.cfg | grep -o R.* | cut -c 2-);
+    yum update -y --enablerepo=$(cat /etc/yroll-saturn.cfg );
     rm -f /root/saturn.lock
     rebootcheck
     
