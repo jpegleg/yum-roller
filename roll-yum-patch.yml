@@ -4,6 +4,8 @@
   tasks:
   - name: deploy yroll-saturn
     template: src=/srv/yroll-saturn dest=/usr/local/sbin/yroll-saturn
+  - name: deploy check-yroll config
+    template: src=/srv/check-yroll.cfg dest=/etc/check-yroll.cfg
   - name: deploy generic repo config
     template: src=/srv/yroll-saturn.cfg dest=/etc/yroll-saturn.cfg
   - name: execute yroll-saturn
@@ -14,6 +16,8 @@
   tasks:
   - name: deploy yroll-saturn
     template: src=/srv/yroll-saturn dest=/usr/local/sbin/yroll-saturn
+  - name: deploy check-yroll config
+    template: src=/srv/check-yroll.cfg dest=/etc/check-yroll.cfg
   - name: deploy generic repo config
     template: src=/srv/yroll-saturn.cfg dest=/etc/yroll-saturn.cfg
   - name: execute yroll-saturn
@@ -24,6 +28,8 @@
   tasks:
   - name: deploy yroll-saturn
     template: src=/srv/yroll-saturn dest=/usr/local/sbin/yroll-saturn
+  - name: deploy check-yroll config
+    template: src=/srv/check-yroll.cfg dest=/etc/check-yroll.cfg
   - name: deploy generic repo config
     template: src=/srv/yroll-saturn.cfg dest=/etc/yroll-saturn.cfg
   - name: execute yroll-saturn
@@ -34,6 +40,8 @@
   tasks:
   - name: deploy yroll-saturn
     template: src=/srv/yroll-saturn dest=/usr/local/sbin/yroll-saturn
+  - name: deploy check-yroll config
+    template: src=/srv/check-yroll.cfg dest=/etc/check-yroll.cfg
   - name: deploy generic repo config
     template: src=/srv/yroll-saturn.cfg dest=/etc/yroll-saturn.cfg
   - name: execute yroll-saturn
