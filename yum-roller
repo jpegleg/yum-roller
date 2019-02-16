@@ -1,0 +1,1 @@
+/usr/bin/ansible-playbook ansible -u root -i /etc/yum-roller.inventory /etc/yum-roll.yml || /usr/local/bin/notify-patch-fail
