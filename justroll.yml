@@ -1,0 +1,6 @@
+---
+- hosts: main
+  remote_user: root
+  tasks:
+  - name: execute yroll-saturn
+    shell: /usr/local/sbin/yroll-saturn
