@@ -60,7 +60,7 @@
     minutes: 10
  
  # Run again to finish any interrupted or hung yum transactions
- # kinda silly but in a situation where networks maintenace is happening... 
+ # kinda silly but in a situation where there is a momentary interruption... 
  
 - hosts: slice-1
   remote_user: root
