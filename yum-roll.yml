@@ -1,0 +1,33 @@
+---
+- hosts: main
+  remote_user: root
+  tasks:
+  - name: deploy yroll-saturn
+    template: src=/srv/yroll-saturn dest=/usr/local/sbin/yroll-saturn
+  - name: deploy check-yroll config
+    template: src=/srv/check-yroll.cfg dest=/etc/check-yroll.cfg
+  - name: deploy check-yroll
+    template: src=/srv/check-yroll dest=/usr/local/sbin/check-yroll
+  - name: deploy generic repo config
+    template: src=/srv/yroll-saturn.cfg dest=/etc/yroll-saturn.cfg
+  - name: execute yroll-saturn
+    shell: /usr/local/sbin/yroll-saturn
+    
+- pause:
+  minutes: 10
+   
+- hosts: main
+  remote_user: root
+  tasks:
+- name: execute yroll-saturn
+  shell: /usr/local/sbin/yroll-saturn
+    
+ - pause:
+  minutes: 10
+  
+ - hosts: main
+   remote_user: root
+   tasks: 
+ - name: execute check-yroll
+   shell: nice /usr/local/sbin/check-yroll
+  
