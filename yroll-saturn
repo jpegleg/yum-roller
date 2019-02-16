@@ -1,0 +1,45 @@
+#!/bin/bash
+
+# yroll edition of saturn rolling updates
+
+# create a lock file
+touch /root/saturn.lock
+
+trapremove () {
+rm -f /root/saturn.lock &
+exit 0
+}
+
+
+rebootcheck () {
+touch /root/yum.list
+touch /root/yum.before
+cp /root/yum.list /root/yum.before
+yum list installed | grep "kernel[.]" > /root/yum.list
+
+change=$(diff /root/yum.list /root/yum.before)
+if [ -z $change ]; then
+         echo "Same code as last run, no reboot.";
+        else
+         shutdown -rf now
+fi
+
+}
+
+main () {
+while true; do
+        rebootcheck
+        yum update -y --enablerepo=$(cat /etc/yroll-saturn.cfg | grep -o R.*;
+        sleep $(cat /etc/yroll-saturn.cfg | grep -o S.*);
+
+done
+}
+
+
+
+if [ -e /root/saturn.lock ]; then
+  exit
+else
+  trap trapremove HUP TERM INT
+  main
+fi
