@@ -1,0 +1,138 @@
+---
+- hosts: slice-1
+  remote_user: root
+  tasks:
+  - name: deploy yroll-saturn
+    template: src=/srv/yroll-saturn dest=/usr/local/sbin/yroll-saturn
+  - name: deploy generic repo config
+    template: src=/srv/yroll-saturn.cfg dest=/etc/yroll-saturn.cfg
+  - name: execute yroll-saturn
+    shell: /usr/local/sbin/yroll-saturn
+    
+- hosts: slice-2
+  remote_user: root
+  tasks:
+  - name: deploy yroll-saturn
+    template: src=/srv/yroll-saturn dest=/usr/local/sbin/yroll-saturn
+  - name: deploy generic repo config
+    template: src=/srv/yroll-saturn.cfg dest=/etc/yroll-saturn.cfg
+  - name: execute yroll-saturn
+    shell: /usr/local/sbin/yroll-saturn
+    
+- hosts: slice-3
+  remote_user: root
+  tasks:
+  - name: deploy yroll-saturn
+    template: src=/srv/yroll-saturn dest=/usr/local/sbin/yroll-saturn
+  - name: deploy generic repo config
+    template: src=/srv/yroll-saturn.cfg dest=/etc/yroll-saturn.cfg
+  - name: execute yroll-saturn
+    shell: /usr/local/sbin/yroll-saturn
+    
+- hosts: slice-4
+  remote_user: root
+  tasks:
+  - name: deploy yroll-saturn
+    template: src=/srv/yroll-saturn dest=/usr/local/sbin/yroll-saturn
+  - name: deploy generic repo config
+    template: src=/srv/yroll-saturn.cfg dest=/etc/yroll-saturn.cfg
+  - name: execute yroll-saturn
+    shell: /usr/local/sbin/yroll-saturn
+ 
+ # Let them finish up
+ - pause:
+    minutes: 10
+ 
+ # Run again to finish any interrupted or hung yum transactions
+ # kinda silly but in a situation where networks maintenace is happening... 
+ 
+ - hosts: slice-1
+  remote_user: root
+  tasks:
+  - name: execute yroll-saturn
+    shell: /usr/local/sbin/yroll-saturn
+    
+- hosts: slice-2
+  remote_user: root
+  tasks:
+  - name: execute yroll-saturn
+    shell: /usr/local/sbin/yroll-saturn
+    
+- hosts: slice-3
+  remote_user: root
+  tasks:
+  - name: execute yroll-saturn
+    shell: /usr/local/sbin/yroll-saturn
+    
+- hosts: slice-4
+  remote_user: root
+  tasks:
+  - name: execute yroll-saturn
+    shell: /usr/local/sbin/yroll-saturn
+    
+ # Let them finish up
+ - pause:
+    minutes: 10
+ 
+ # Next we start the automated checking and restoration functions
+ 
+ - hosts: slice-1
+   remote_user: root
+   tasks: 
+   - name: check on group 1
+     template: src=/srv/check-yroll dest=/usr/local/sbin/check-yroll
+   - name: execute check-yroll
+     shell: /usr/local/sbin/check-yroll
+     
+ - hosts: slice-2
+   remote_user: root
+   tasks: 
+   - name: check on group 1
+     template: src=/srv/check-yroll dest=/usr/local/sbin/check-yroll
+   - name: execute check-yroll
+     shell: /usr/local/sbin/check-yroll
+     
+ - hosts: slice-3
+   remote_user: root
+   tasks: 
+   - name: check on group 1
+     template: src=/srv/check-yroll dest=/usr/local/sbin/check-yroll
+   - name: execute check-yroll
+     shell: /usr/local/sbin/check-yroll     
+     
+ - hosts: slice-4
+   remote_user: root
+   tasks: 
+   - name: check on group 1
+     template: src=/srv/check-yroll dest=/usr/local/sbin/check-yroll
+   - name: execute check-yroll
+     shell: /usr/local/sbin/check-yroll
+     
+ # Let them finish up
+ - pause:
+    minutes: 2
+    
+  - hosts: slice-1
+   remote_user: root
+   tasks: 
+   - name: check on group 1
+     shell: /usr/local/sbin/check-yroll
+     
+ - hosts: slice-2
+   remote_user: root
+   tasks: 
+   - name: check on group 2
+     shell: /usr/local/sbin/check-yroll
+     
+ - hosts: slice-3
+   remote_user: root
+   tasks: 
+   - name: check on group 3
+     shell: /usr/local/sbin/check-yroll     
+     
+ - hosts: slice-4
+   remote_user: root
+   tasks: 
+   - name: check on group 4
+     shell: /usr/local/sbin/check-yroll
+    
