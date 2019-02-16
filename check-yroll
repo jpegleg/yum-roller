@@ -1,0 +1,224 @@
+#!/bin/bash
+
+# This script does a lot, lets migrate it to c, rust, or go someday maybe.
+
+# CHECK YUM UNATTENDED UPDATES
+
+# touch the log
+touch /var/log/yroll.log
+
+# Initialize some variables.
+health=0
+disk=0
+mem=0
+loadavg=0
+procs=0
+
+# Set API communication
+api=$(cat /etc/check-yroll.cfg | grep -o API.* | cut -c 6-)
+port=$(cat /etc/check-yroll.cfg | grpe -o PORT.* | cut -c 6-)
+
+apiformat=$(cat /etc/check-yroll.cfg | grep -o APIFORMAT.* | cut -c 10-)
+apidata=$(cat /etc/check-yroll.cfg | grep -o APIDATA.* | cut -c 9-)
+
+# Set special problem children
+ap1=$(cat /etc/check-yroll.cfg | grep -o AP1.* | cut -c 4-)
+ap2=$(cat /etc/check-yroll.cfg | grep -o AP2.* | cut -c 4-)
+ap3=$(cat /etc/check-yroll.cfg | grep -o AP3.* | cut -c 4-)
+
+ap1s=$(cat /etc/check-yroll.cfg | grep -o P1-start.* | cut -c 3-)
+ap2s=$(cat /etc/check-yroll.cfg | grep -o P1-start.* | cut -c 3-)
+ap3s=$(cat /etc/check-yroll.cfg | grep -o P1-start.* | cut -c 3-)
+
+lockdir=/var/tmp/.check-yroll.lock
+
+
+# Lay out our checker functions
+
+babysit1 () {
+sudo "$ap1s"
+}
+
+babysit2 () {
+sudo "$ap2s"
+}
+
+babysit3 () {
+sudo "$ap3s"
+}
+
+babysitter () {
+  for app in "$ap1" "$ap2" "$ap3"; do
+    (($procs++))
+    babysit$procs || error=true; procs=$app; (($procs--))
+  done
+}
+
+buildprocsmessage () {
+
+    # -- build your own json message here --
+    # -- edit the echos to send to $apidata each line --
+
+echo "{" > $apidata
+  echo "\"$(hostname)\": {" >> $apidata
+  echo "      \"message1\": \"Server patch alert, please review processes $procs.\"" >> $apidata
+  echo "              }" >> $apidata
+  echo "}" >> $apidata
+}
+
+builddiskmessage () {
+
+    # -- build your own json message here --
+    # -- edit the echos to send to $apidata each line --
+
+  echo "{" > $apidata
+  echo "\"$(hostname)\": {" >> $apidata
+  echo "      \"message\": \"Server patch alert, please review disk space $full.\"" >> $apidata
+  echo "              }" >> $apidata
+  echo "}" >> $apidata
+}
+
+buildmemmessage () {
+
+    # -- build your own json message here --
+    # -- edit the echos to send to $apidata each line --
+
+  echo "{" > $apidata
+  echo "\"$(hostname)\": {" >> $apidata
+  echo "      \"message\": \"Server patch alert, please review over 10% swap memory usage.\"" >> $apidata
+  echo "              }" >> $apidata
+  echo "}" >> $apidata
+}
+
+buildloadavgmessage () {
+
+    # -- build your own json message here --
+    # -- edit the echos to send to $apidata each line --
+
+  echo "{" > $apidata
+  echo "\"$(hostname)\": {" >> $apidata
+  echo "      \"message\": \"Server patch alert, please review load average $(cat /var/tmp/uptime.loadav.out).\"" >> $apidata
+  echo "              }" >> $apidata
+  echo "}" >> $apidata
+}
+
+buildhealthalert () {
+
+    # -- build your own json message here --
+    # -- edit the echos to send to $apidata each line --
+
+  echo "{" > $apidata
+  echo "\"$(hostname)\": {" >> $apidata
+  echo "      \"message\": \"Server patch alert, checks failed to execute.\"" >> $apidata
+  echo "              }" >> $apidata
+  echo "}" >> $apidata
+}
+
+buildlockalert () {
+
+    # -- build your own json message here --
+    # -- edit the echos to send to $apidata each line --
+
+  echo "{" > $apidata
+  echo "\"$(hostname)\": {" >> $apidata
+  echo "      \"message\": \"Lock directory is still in place, please investigate.\"" >> $apidata
+  echo "              }" >> $apidata
+  echo "}" >> $apidata
+}
+
+
+ensuredgig () {
+  if [ $procs -lt 3 ]; 
+     buildprocsmessage
+     api
+  else
+     procs=0
+  fi
+  
+  if [ -z "$full" ];
+    disk=0
+  else
+     builddiskmessage
+     api
+  fi
+  
+  if [ -z "$swap" ];
+     mem=0
+  else
+     buildmemmessage
+     api
+  fi
+  
+   if [ $loadavg -ne 0 ];
+     buildloadavgmessage
+     api
+  else
+     loadavg=0
+  fi
+  
+ }
+ 
+diskcheck () {
+  df -h > /var/tmp/yroll.disk.out
+  full="$(grep 100% /var/tmp/yroll.disk  | rev | cut -d' ' -f1,2 | rev)"
+}
+
+loadcheck () {
+   uptime | grep -o "rage.*" | cut -d' ' -f2  | cut -d'.' -f1 > /var/tmp/uptime.loadav.out
+   cores=$(grep processor /proc/cpuinfo | wc -l)
+   loadavg=$(echo " $(cat /var/tmp/uptime.loadav.out) / $cores" | bc)
+ }
+ 
+memcheck () {
+   minusswap=$(echo "$(free -m | grep Mem | awk '{print $2}') -  $(free -m | grep Swap | awk '{print $3}')" | bc)
+   maxswap=$(echo "$(free -m | grep Mem | awk '{print $2}') / 10" | bc)
+   if [ $minusswap -gt $maxswap ]; then
+     mem=1
+   else
+     mem=0
+   fi
+}
+
+  
+# If we get HUP TERM or INT, remove the lock and pump the json
+
+api () {
+  curl -xV POST "$api":"$port" -d @"$apidata" &
+}
+
+trapapi () {
+  rm -rf /var/tmp/.check-yroll.lock
+  curl -xV POST "$api":"$port" -d @"$apidata" &
+  exit 0
+}
+
+trap trapapi HUP TERM INT
+
+
+# Now we start the program
+
+main () {
+diskcheck
+loadcheck
+memcheck
+babysitter
+ensuredgig
+}
+
+if [ -d $lockdir ]; then
+  echo "$(date +%Y%m%d-%H:%M:%S:%N) Lock dir $lockdir is still in place. Notify and exit..."
+  buildlockalert
+  api
+  exit 1
+ else
+  mkdir $lockdir
+fi
+
+main || health=1
+
+if [ $health == 1 ]; then
+  echo "$(date +%Y%m%d-%H:%M:%S:%N) Negative exit code while checking. State: $health $disk $loadav $mem $procs" >> /var/log/yroll.log
+  buildhealthalert
+else
+  echo "$(date +%Y%m%d-%H:%M:%S:%N) Completed checks. State: $health $disk $loadav $mem $procs" >> /var/log/yroll.log
+fi
