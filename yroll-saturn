@@ -15,11 +15,11 @@ rebootcheck () {
 touch /root/yum.list
 touch /root/yum.before
 cp /root/yum.list /root/yum.before
-yum list installed | grep "kernel[.]\|glibc-" > /root/yum.list
+yum list installed | grep "kernel[.]" > /root/yum.list
 
 change=$(diff /root/yum.list /root/yum.before)
 if [ -z $change ]; then
-         echo "Same kernel and glibc code as last run, no reboot.";
+         echo "Same kernel installed as last run, no reboot.";
         else
          shutdown -rf now
 fi
